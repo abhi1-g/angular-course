@@ -10,7 +10,7 @@ app.config(function($routeProvider) {
     )
    .when('/about',
         {
-            controller: 'myController',
+            controller: 'aboutController',
             templateUrl: 'templates/about.html'
         }
     )
@@ -29,8 +29,41 @@ app.config(function($routeProvider) {
    .otherwise({redirectTo: '/404'})
 })
 
-app.controller('myController', function($scope) {
-    $scope.test = "New value";
-    var d=2;
-    $scope.users = [{value: "name 1"},{value: "name 2"},{value: "name 3"},{value: "name 4"},{value: "name 5"}, {value: "ll"}, {value: "kjhb"}, {value: "aaaaa"}, {value: "zzzzzzzzz"}, {value: "jjjjj"}];
+app.controller('myController', function($scope, userData) {
+  // console.log(userData);
+  $scope.newuser = "the user";
+  $scope.users = userData.getdata();
+  $scope.adduser = function() {
+    userData.setdata($scope.newuser);
+  }
 });
+app.controller('aboutController', function($scope, userData, userDataService) {
+  console.log(userDataService);
+  $scope.theusers = userData.getdata();
+});
+
+app.factory('userData', function() {
+  var myfactory = {};
+  var data = [{value: "user 1"},{value: "user 2"},{value: "user 3"},{value: "user 4"}];
+  myfactory.getdata = function() {
+    return data;
+  }
+  myfactory.setdata = function(value) {
+    var newuser = {value: value};
+    data.push(newuser);
+    return '';
+  }
+  return myfactory;
+});
+
+app.service('userDataService', function(){
+  this.data = [{value: "serviceuser 1"},{value: "serviceuser 2"},{value: "serviceuser 3"},{value: "serviceuser 4"}];
+  this.getdata = function() {
+    return this.data;
+  }
+  this.setdata = function(value) {
+    var newuser = {value: value};
+    this.data.push(newuser);
+    return '';
+  }
+})
